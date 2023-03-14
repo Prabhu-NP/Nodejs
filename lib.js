@@ -18,6 +18,33 @@ function jiraTicket(sap_data){
     return jiraSchema
 }
 
+function elasticTicket(sap_data){
+
+    // declare the elastic ticket schema
+    const elasticSchema = require("./elasticSchema.json");
+
+    // Update the elasticSchema with data from SAP HANA
+    elasticSchema.MANDT = sap_data.MANDT;
+    elasticSchema.RFC = sap_data.RFC;
+    elasticSchema.REQ_NO = sap_data.REQ_NO;
+    elasticSchema.ALERT_SEND_DATE = sap_data.ALERT_SEND_DATE;
+    elasticSchema.ALERT_SEND_TIME = sap_data.ALERT_SEND_TIME;
+    elasticSchema.EVENT_ID = sap_data.EVENT_ID;
+    elasticSchema.EVENT_DESCRIPTION = sap_data.EVENT_DESCRIPTION;
+    elasticSchema.PROGRAM_NAME = sap_data.PROGRAM_NAME;
+    elasticSchema.SEVERITY = sap_data.SEVERITY;
+    elasticSchema.RISK_DESCRIPTION = sap_data.RISK_DESCRIPTION;
+    elasticSchema.EVENT_CLASS = sap_data.EVENT_CLASS;
+    elasticSchema.CATEGORIES = sap_data.CATEGORIES;
+    elasticSchema.RISK_OWNER = sap_data.RISK_OWNER;
+    elasticSchema.ALERT_CLOSED_DATE = sap_data.ALERT_CLOSED_DATE;
+    elasticSchema.ALERT_STATUS = sap_data.ALERT_STATUS;
+    elasticSchema.STATUS = sap_data.STATUS;
+    elasticSchema.INCIDENT_NO = sap_data.INCIDENT_NO;
+
+    return elasticSchema
+}
+
 // Purpose : Create Jira Ticket - A task
 function jira_postRequest(requestData, jiraUrl, auth){
 
@@ -53,7 +80,7 @@ function elastic_postrequest(requestData){
     const elastic_url = creds.elastic_url;
     const elastic_index = creds.elastic_index;
     const elastic_type = creds.elastic_type;
-    const elastic_tag = requestData.MANDT;
+    const elastic_tag = requestData.REQ_NO;
 
     const mainUrl = elastic_url + elastic_index + elastic_type + elastic_tag;
 
@@ -107,4 +134,4 @@ function axiosGet(issueId){
      });
 }
 
-module.exports = { jiraTicket, jira_postRequest, elastic_postrequest }
+module.exports = { jiraTicket, jira_postRequest, elastic_postrequest, elasticTicket }
