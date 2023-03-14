@@ -16,7 +16,6 @@ app.get('/', function(req, res){
 
 app.post('/Ticket/API/:Jira', jsonParser,function(req, res){
     // Step 1 : Show a responce code and message for the webpage
-    res.status(200);
 
     // the incoming data fro the POST request is mapped as SAP input data
     const sapInputdata = req.body;
@@ -29,16 +28,21 @@ app.post('/Ticket/API/:Jira', jsonParser,function(req, res){
     // creating a Jira target url
     var jiraMainurl = jiraUrl + issueEndpoint;
 
-    const elasticUrl = "localhost:9200/sap_sample_data/_doc/250";
-
     // creating a custom Jira ticket form the SAP dat
     const jira_ticket = libraries.jiraTicket(sapInputdata);
 
     // post the jira ticket
     libraries.jira_postRequest(jira_ticket, jiraMainurl, auth);
 
+    // create the elastic schema entry
+    const elastic_ticket = libraries.elasticTicket(sapInputdata);
+
     // post the schema to Elastic & Kibana
-    libraries.elastic_postrequest(sapInputdata);
+    libraries.elastic_postrequest(elastic_ticket);
+
+    res.status(200).send('200')
+
+    return
 });
 
 app.get('/webhook/API/:Jira', urlencodedParser, function(req, res){
