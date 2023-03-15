@@ -15,32 +15,58 @@ app.get('/', function(req, res){
 });
 
 app.post('/Ticket/API/:Jira', jsonParser,function(req, res){
+    
     // Step 1 : Show a responce code and message for the webpage
 
     // the incoming data fro the POST request is mapped as SAP input data
-    const sapInputdata = req.body;
+    var sapInputdata = [];
+
+    sapInputdata = req.body;
+    // const sapInputdata = require("./new_sampleData.json");
     const credentials = require("./creds.json");
     const auth = require("./jiraAuth.json");
 
     const jiraUrl = credentials.jira_url;
     const issueEndpoint = credentials.jira_issueEndpoint;
 
+    var arrayLength = sapInputdata.length;
+
+    console.log(arrayLength);
+
     // creating a Jira target url
     var jiraMainurl = jiraUrl + issueEndpoint;
 
-    // creating a custom Jira ticket form the SAP dat
-    const jira_ticket = libraries.jiraTicket(sapInputdata);
+    // create a for loop for sending an array of sap input data
+    for(var i = 0; i < arrayLength; i++){
 
-    // post the jira ticket
-    libraries.jira_postRequest(jira_ticket, jiraMainurl, auth);
+        var currentSap = sapInputdata[i];
 
-    // create the elastic schema entry
-    const elastic_ticket = libraries.elasticTicket(sapInputdata);
+        // creating a custom Jira ticket form the SAP dat
+        const jira_ticket = libraries.jiraTicket(currentSap);
 
-    // post the schema to Elastic & Kibana
-    libraries.elastic_postrequest(elastic_ticket);
+        // post the jira ticket
+        libraries.jira_postRequest(jira_ticket, jiraMainurl, auth);
 
-    res.status(200).send('200')
+        // create the elastic schema entry
+        const elastic_ticket = libraries.elasticTicket(currentSap);
+
+        // post the schema to Elastic & Kibana
+        libraries.elastic_postrequest(elastic_ticket);
+    }
+
+    // // creating a custom Jira ticket form the SAP dat
+    // const jira_ticket = libraries.jiraTicket(sapInputdata);
+
+    // // post the jira ticket
+    // libraries.jira_postRequest(jira_ticket, jiraMainurl, auth);
+
+    // // create the elastic schema entry
+    // const elastic_ticket = libraries.elasticTicket(sapInputdata);
+
+    // // post the schema to Elastic & Kibana
+    // libraries.elastic_postrequest(elastic_ticket);
+
+    res.status(200).send('Status: OK')
 
     return
 });
