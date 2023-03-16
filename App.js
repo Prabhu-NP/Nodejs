@@ -61,7 +61,7 @@ app.post('/Ticket/API/:Jira', jsonParser,function(req, res){
         // creating a custom Jira ticket form the SAP dat
         const jira_ticket = libraries.jiraTicket(currentSap, severity);
 
-        console.log(jira_ticket);
+        // console.log(jira_ticket);
 
         // post the jira ticket
         libraries.jira_postRequest(jira_ticket, jiraMainurl, auth);
