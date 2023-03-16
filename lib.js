@@ -1,14 +1,19 @@
 // Purpose : Develop a Jira ticket from SAP input data
-function jiraTicket(sap_data){
+function jiraTicket(sap_data, severity){
 
     // declare the jira ticket schema
-    const jiraSchema = require("./jiraSchema.json");    
+    const jiraSchema = require("./jiraSchema.json");
+    // const jiraSchema = require("./priority.json");    
     const mapper = require("./jiraMapper.json");
+
+    var summary = sap_data.EVENT_CLASS + " - " + sap_data.RISK_DESCRIPTION;
     
     // now perform the data dumping in real time
     // Update the jiraSchema object with SAP data
-    jiraSchema.fields.summary = sap_data[mapper.summary];
-    jiraSchema.fields.description = sap_data[mapper.description];
+    jiraSchema.fields.summary = summary;
+    jiraSchema.fields.description = sap_data.EVENT_DESCRIPTION;
+
+    jiraSchema.fields.priority.name = severity;
 
     // Optional: Update the issue type
     if (sap_data.issuetype) {
@@ -16,6 +21,31 @@ function jiraTicket(sap_data){
     }
 
     return jiraSchema
+}
+
+function severityMapper(severity){
+
+    // var severity = sapInput.SEVERITY;
+
+    // console.log(severity);
+
+    if(severity == "CRITICAL"){
+        severity = "Highest";
+    }
+    else if(severity == "HIGH"){
+        severity = "High";
+    }
+    else if(severity == "MEDIUM"){
+        severity = "Medium";   
+    }
+    else if(severity == "LOW"){
+        severity = "Low";
+    }
+    else{
+        severity = "Lowest";
+    }
+
+    return severity
 }
 
 function elasticTicket(sap_data){
@@ -37,7 +67,7 @@ function elasticTicket(sap_data){
     elasticSchema.EVENT_CLASS = sap_data.EVENT_CLASS;
     elasticSchema.CATEGORIES = sap_data.CATEGORIES;
     elasticSchema.RISK_OWNER = sap_data.RISK_OWNER;
-    elasticSchema.ALERT_CLOSED_DATE = sap_data.ALERT_CLOSED_DATE;
+    elasticSchema.ALERT_CLOSED_DATE = undefined;
     elasticSchema.ALERT_STATUS = sap_data.ALERT_STATUS;
     elasticSchema.STATUS = sap_data.STATUS;
     elasticSchema.INCIDENT_NO = sap_data.INCIDENT_NO;
@@ -134,4 +164,4 @@ function axiosGet(issueId){
      });
 }
 
-module.exports = { jiraTicket, jira_postRequest, elastic_postrequest, elasticTicket }
+module.exports = { jiraTicket, jira_postRequest, elastic_postrequest, elasticTicket, severityMapper}
