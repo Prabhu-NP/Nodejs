@@ -1,15 +1,15 @@
 {
-    "fields": {
+  "fields": {
+      "summary": "",
+      "description": "",
       "project": {
-        "key": "SAM12"
+          "key": "SAM12"
       },
-      "summary": "SEVERITY",
-      "description": "MANDT: 12345\nRFC: \nALERT_SEND_DATE: 2023-03-09\nALERT_SEND_TIME: 7:45:36\nEVENT_ID: SEC003\nEVENT_DESCRIPTION: R type events\nPROGRAM_NAME: ZSEC001\nSEVERITY: HIGH\nRISK_DESCRIPTION: R type events\nEVENT_CLASS: BUSINESS\nCATEGORIES: R TYPE\nRISK_OWNER: ETD_ALERT\nALERT_CLOSED_DATE: 2023-03-09\nALERT_STATUS: SUCCESS\nSTATUS: CLOSED",
       "issuetype": {
-        "name": "Task"
+          "name": "Task"
       },
-      "labels": [
-        "ALERT_CREATED"
-      ]
-    }
+      "priority": {
+          "name": ""
+      }
   }
+}
