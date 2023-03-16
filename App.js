@@ -17,7 +17,6 @@ app.get('/', function(req, res){
 app.post('/Ticket/API/:Jira', jsonParser,function(req, res){
     
     // Step 1 : Show a responce code and message for the webpage
-
     // the incoming data fro the POST request is mapped as SAP input data
     var sapInputdata = [];
 
@@ -41,8 +40,28 @@ app.post('/Ticket/API/:Jira', jsonParser,function(req, res){
 
         var currentSap = sapInputdata[i];
 
+        var severity = "";
+
+        if(currentSap.SEVERITY == "CRITICAL"){
+            severity = "Highest";
+        }
+        else if(currentSap.SEVERITY == "HIGH"){
+            severity = "High";
+        }
+        else if(currentSap.SEVERITY == "MEDIUM"){
+            severity = "Medium";
+        }
+        else if(currentSap.SEVERITY == "LOW"){
+            severity = "Low";
+        }
+        else{
+            severity = "Lowest";
+        }
+
         // creating a custom Jira ticket form the SAP dat
-        const jira_ticket = libraries.jiraTicket(currentSap);
+        const jira_ticket = libraries.jiraTicket(currentSap, severity);
+
+        console.log(jira_ticket);
 
         // post the jira ticket
         libraries.jira_postRequest(jira_ticket, jiraMainurl, auth);
